@@ -86,5 +86,26 @@ namespace CheckoutKataTests
             Assert.Equal(130, checkout.GetTotalPrice());  // 3A discount (130) instead of 3×50=150
         }
 
+        [Theory]
+        [InlineData(3, 130)]    // 3A = 130 (discount only)
+        [InlineData(4, 180)]    // 3A + 1A = 130 + 50
+        [InlineData(5, 230)]    // 3A + 2A = 130 + 100
+        [InlineData(6, 260)]    // 3A + 3A = 130 + 130
+        [InlineData(7, 310)]    // 3A + 3A + 1A = 130 + 130 + 50
+        public void Scan_MultipleAs_AppliesCorrectDiscounts(int quantity, int expectedTotal)
+        {
+            // Arrange
+            ICheckout checkout = new Checkout();
+
+            // Act
+            for (int i = 0; i < quantity; i++)
+            {
+                checkout.Scan("A");
+            }
+
+            // Assert
+            Assert.Equal(expectedTotal, checkout.GetTotalPrice());
+        }
+
     }
 }
