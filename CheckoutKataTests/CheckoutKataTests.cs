@@ -107,5 +107,19 @@ namespace CheckoutKataTests
             Assert.Equal(expectedTotal, checkout.GetTotalPrice());
         }
 
+        [Fact]
+        public void Scan_TwoBs_AppliesMultiBuyDiscount_Returns45()
+        {
+            // Arrange
+            ICheckout checkout = new Checkout();
+
+            // Act
+            checkout.Scan("B");
+            checkout.Scan("B");
+
+            // Assert
+            Assert.Equal(45, checkout.GetTotalPrice());  // 2B discount (45) instead of 2×30=60
+        }
+
     }
 }
