@@ -12,10 +12,21 @@ namespace CheckoutKata
 
         public void Scan(string sku)
         {
-            if (sku == "A")
-                total += 50;
-            else if (sku == "B")
-                total += 30;
+            switch (sku)
+            {
+                case "A":
+                    total += 50;
+                    break;
+                case "B":
+                    total += 30;
+                    break;
+                case "C":
+                    total += 20;
+                    break;
+                case "D":
+                    total += 15;
+                    break;
+            }
         }
 
         public int GetTotalPrice() => total;
