@@ -157,5 +157,29 @@ namespace CheckoutKataTests
             Assert.Equal(45, checkout.GetTotalPrice());  // 2B discount (45) instead of 2×30=60
         }
 
+        [Fact]
+        public void Scan_WithCustomPricingRules_AppliesCorrectPricing()
+        {
+            // Arrange - custom pricing rules
+            var customRules = new List<IPricingRule>
+            {
+                new MultiBuyDiscountRule("A", 40, 2, 70),  // New rule: 2 for 70
+                new MultiBuyDiscountRule("B", 25, 3, 60),  // New rule: 3 for 60
+                new MultiBuyDiscountRule("C", 10)
+            };
+
+            ICheckout checkout = new Checkout(customRules);
+
+            // Act
+            checkout.Scan("A");
+            checkout.Scan("A");
+            checkout.Scan("B");
+            checkout.Scan("B");
+            checkout.Scan("B");
+            checkout.Scan("C");
+
+            // Assert
+            Assert.Equal(140, checkout.GetTotalPrice()); // AA(70) + BBB(60) + C(10)
+        }
     }
 }
