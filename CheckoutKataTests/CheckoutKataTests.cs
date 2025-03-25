@@ -21,5 +21,19 @@ namespace CheckoutKataTests
             // Assert
             Assert.Equal(50, checkout.GetTotalPrice());
         }
+        [Fact]
+        public void Scan_MultipleSameItems_ReturnsCorrectTotal()
+        {
+            // Arrange
+            ICheckout checkout = new Checkout();
+
+            // Act
+            checkout.Scan("A");
+            checkout.Scan("A");
+
+            // Assert
+            Assert.Equal(100, checkout.GetTotalPrice());
+        }
+
     }
 }
