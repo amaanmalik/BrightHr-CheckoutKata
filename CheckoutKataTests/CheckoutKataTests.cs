@@ -80,7 +80,8 @@ namespace CheckoutKataTests
             var pricingRules = new List<IPricingRule>
             {
                 new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45)
+                new MultiBuyDiscountRule("B", 30, 2, 45),
+                new MultiBuyDiscountRule("C", 20)
             };
 
             ICheckout checkout = new Checkout(pricingRules);
