@@ -21,6 +21,7 @@ namespace CheckoutKataTests
             // Assert
             Assert.Equal(50, checkout.GetTotalPrice());
         }
+
         [Fact]
         public void Scan_MultipleSameItems_ReturnsCorrectTotal()
         {
@@ -68,6 +69,21 @@ namespace CheckoutKataTests
 
             // Assert
             Assert.Equal(expectedTotal, checkout.GetTotalPrice());
+        }
+
+        [Fact]
+        public void Scan_ThreeAs_AppliesMultiBuyDiscount_Returns130()
+        {
+            // Arrange
+            ICheckout checkout = new Checkout();
+
+            // Act
+            checkout.Scan("A");
+            checkout.Scan("A");
+            checkout.Scan("A");
+
+            // Assert
+            Assert.Equal(130, checkout.GetTotalPrice());  // 3A discount (130) instead of 3×50=150
         }
 
     }
