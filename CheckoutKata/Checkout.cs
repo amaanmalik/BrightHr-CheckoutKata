@@ -13,33 +13,27 @@ namespace CheckoutKata
         public void Scan(string sku)
         {
             scannedItems.Add(sku);
-        }              
+        }
+
+        private int ApplyMultiBuyDiscount(string sku, int unitPrice, int discountQuantity, int discountPrice)
+        {
+            int count = scannedItems.Count(item => item == sku);
+            int discountTotal = (count / discountQuantity) * discountPrice;
+            int regularTotal = (count % discountQuantity) * unitPrice;
+
+            return discountTotal + regularTotal;
+        }
 
         public int GetTotalPrice()
         {
             int total = 0;
 
-            // Count occurrences of each SKU
-            int countA = scannedItems.Count(sku => sku == "A");
-            int countB = scannedItems.Count(sku => sku == "B");
-            int countC = scannedItems.Count(sku => sku == "C");
-            int countD = scannedItems.Count(sku => sku == "D");
-
-            // Apply multi-buy discount for A (3 for 130)
-            total += (countA / 3) * 130;               // Apply discount for every set of 3 A's
-            total += (countA % 3) * 50;                // Add remaining A's at regular price
-
-            // Apply multi-buy discount for B (3 for 130)
-            total += (countB / 2) * 45;               // Apply discount for every set of 2 B's
-            total += (countB % 2) * 30;                // Add remaining B's at regular price
-            
-            // Regular pricing for C and D
-            total += countC * 20;
-            total += countD * 15;
-
+            total += ApplyMultiBuyDiscount("A", 50, 3, 130); // Discount: 3 for 130
+            total += ApplyMultiBuyDiscount("B", 30, 2, 45); // Discount: 2 for 45
+            total += scannedItems.Count(sku => sku == "C") * 20;
+            total += scannedItems.Count(sku => sku == "D") * 15;
 
             return total;
-
         }
     }
 }
