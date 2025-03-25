@@ -14,6 +14,8 @@ namespace CheckoutKata
         {
             if (sku == "A")
                 total += 50;
+            else if (sku == "B")
+                total += 30;
         }
 
         public int GetTotalPrice() => total;
