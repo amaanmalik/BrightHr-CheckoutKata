@@ -9,16 +9,18 @@ namespace CheckoutKataTests
 {
     public class CheckoutKataTests
     {
+        private readonly List<IPricingRule> pricingRules = new List<IPricingRule>
+        {
+            new MultiBuyDiscountRule("A", 50, 3, 130),
+            new MultiBuyDiscountRule("B", 30, 2, 45),
+            new MultiBuyDiscountRule("C", 20),
+            new MultiBuyDiscountRule("D", 15)
+        };
+
         [Fact]
         public void Scan_SingleItemA_Returns50()
         {
             // Arrange
-            var pricingRules = new List<IPricingRule>
-            {
-                new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45)
-            };
-
             ICheckout checkout = new Checkout(pricingRules);
 
             // Act
@@ -32,12 +34,6 @@ namespace CheckoutKataTests
         public void Scan_MultipleSameItems_ReturnsCorrectTotal()
         {
             // Arrange
-            var pricingRules = new List<IPricingRule>
-            {
-                new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45)
-            };
-
             ICheckout checkout = new Checkout(pricingRules);
 
             // Act
@@ -52,12 +48,6 @@ namespace CheckoutKataTests
         public void Scan_DifferentItems_ReturnsCorrectTotal()
         {
             // Arrange
-            var pricingRules = new List<IPricingRule>
-            {
-                new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45)
-            };
-
             ICheckout checkout = new Checkout(pricingRules);
 
             // Act
@@ -69,21 +59,42 @@ namespace CheckoutKataTests
         }
 
         [Theory]
+        // Random combinations
         [InlineData("AABB", 145)]     // A(50) + A(50) + BB(45 -Discounted total) = 145
         [InlineData("ABC", 100)]      // A(50) + B(30) + C(20) = 100
         [InlineData("BCA", 100)]      // A(50) + B(30) + C(20) = 100
         [InlineData("CAB", 100)]      // A(50) + B(30) + C(20) = 100
         [InlineData("AAAABBC", 245)] // AAA(130 - Discounted total) + A(50) + BB(45 - Discounted total) + C(20) = 245 
+                                     // Single items
+        [InlineData("A", 50)]
+        [InlineData("B", 30)]
+        [InlineData("C", 20)]
+        [InlineData("D", 15)]
+        // Multiple same items (with discounts)
+        [InlineData("AA", 100)]
+        [InlineData("AAA", 130)]
+        [InlineData("AAAA", 180)]
+        [InlineData("AAAAA", 230)]
+        [InlineData("AAAAAA", 260)]
+        [InlineData("BB", 45)]
+        [InlineData("BBB", 75)]
+        [InlineData("BBBB", 90)]
+        // Mixed items
+        [InlineData("AB", 80)]
+        [InlineData("ABCD", 115)]
+        [InlineData("AAABB", 175)] // AAA(130) + BB(45)
+        [InlineData("AAABBB", 205)] // AAA(130) + BBB(75)
+        [InlineData("DABABA", 190)] // D(15) + AAA(130) + BB(45)
+                                    // Different orderings     
+        [InlineData("BAC", 100)]
+        // Edge cases
+        [InlineData("", 0)]
+        [InlineData("X", 0)]  // Unknown item
+        [InlineData("AXB", 80)] // A(50) + X(0) + B(30)
+        [InlineData("AXXA", 100)] // AA(100) + XX(0)
         public void Scan_MultipleCombinations_ReturnsCorrectTotal(string items, int expectedTotal)
         {
             // Arrange
-            var pricingRules = new List<IPricingRule>
-            {
-                new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45),
-                new MultiBuyDiscountRule("C", 20)
-            };
-
             ICheckout checkout = new Checkout(pricingRules);
 
             // Act
@@ -100,12 +111,6 @@ namespace CheckoutKataTests
         public void Scan_ThreeAs_AppliesMultiBuyDiscount_Returns130()
         {
             // Arrange
-            var pricingRules = new List<IPricingRule>
-            {
-                new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45)
-            };
-
             ICheckout checkout = new Checkout(pricingRules);
 
             // Act
@@ -126,12 +131,6 @@ namespace CheckoutKataTests
         public void Scan_MultipleAs_AppliesCorrectDiscounts(int quantity, int expectedTotal)
         {
             // Arrange
-            var pricingRules = new List<IPricingRule>
-            {
-                new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45)
-            };
-
             ICheckout checkout = new Checkout(pricingRules);
 
             // Act
@@ -148,12 +147,6 @@ namespace CheckoutKataTests
         public void Scan_TwoBs_AppliesMultiBuyDiscount_Returns45()
         {
             // Arrange
-            var pricingRules = new List<IPricingRule>
-            {
-                new MultiBuyDiscountRule("A", 50, 3, 130),
-                new MultiBuyDiscountRule("B", 30, 2, 45)
-            };
-
             ICheckout checkout = new Checkout(pricingRules);
 
             // Act
