@@ -51,11 +51,11 @@ namespace CheckoutKataTests
         }
 
         [Theory]
-        [InlineData("AABB", 160)]     // A(50) + A(50) + B(30) + B(30) = 160
+        [InlineData("AABB", 145)]     // A(50) + A(50) + BB(45 -Discounted total) = 145
         [InlineData("ABC", 100)]      // A(50) + B(30) + C(20) = 100
         [InlineData("BCA", 100)]      // A(50) + B(30) + C(20) = 100
         [InlineData("CAB", 100)]      // A(50) + B(30) + C(20) = 100
-        [InlineData("AAAABBC", 260)] // AAA(130 - Discounted total) + A(50) B(30*2) + C(20) = 260 
+        [InlineData("AAAABBC", 245)] // AAA(130 - Discounted total) + A(50) + BB(45 - Discounted total) + C(20) = 245 
         public void Scan_MultipleCombinations_ReturnsCorrectTotal(string items, int expectedTotal)
         {
             // Arrange
